@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"cards"
 	"player"
+	// "os"
+	// "bufio"
 )
 
 func drawCard(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player.Player) {
@@ -34,13 +36,28 @@ func playRound()  {
 
 func main() {
 	fmt.Println("Welcome to Blackjack Simulator feat. Go!")
-	fmt.Println("Press [1] to start...")
+	
 
+	// read user input
+	fmt.Println("Press [enter] to start...")
 	var input string
-	fmt.Scanf("%s", &input)
-	for input == "1" {
+	fmt.Scanf("%s\n", &input)
+	// fmt.Printf("Collected input: %v of type %T with length %v.\n", input, input, len(input))
+
+	// game status
+	playing := false
+	if input == "" {
+		playing = true
+	}
+
+	for playing {
 		playRound()
-		fmt.Println("Press [1] to continue...")
-		fmt.Scanf("%s", &input)
+		fmt.Println("Press [enter] to continue, anything else to stop.")
+		fmt.Scanf("%s\n", &input)
+		
+		// end game when user wants to stop
+		if input != "" {
+			playing = false
+		}
 	}
 }
