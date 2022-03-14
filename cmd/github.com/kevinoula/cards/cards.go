@@ -1,7 +1,6 @@
 package cards
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 )
@@ -27,22 +26,6 @@ var valueMap = map[string]int {
 	"King": 10,
 }
 
-// var allowedValues = []string{
-// 	"Ace",
-// 	"2",
-// 	"3",
-// 	"4",
-// 	"5",
-// 	"6",
-// 	"7",
-// 	"8",
-// 	"9",
-// 	"10",
-// 	"Jack",
-// 	"Queen",
-// 	"King",
-// }
-
 var allowedSuits = []string {
 	"spades",
 	"hearts",
@@ -50,6 +33,14 @@ var allowedSuits = []string {
 	"diamonds",
 }
 
+
+func NewCard(value string, suit string) Card {
+	/*
+	Private function.
+	Initializes a new card structure. A card has a value and a suit.
+	*/
+	return Card{value, suit}
+}
 
 func newCard(value string, suit string) Card {
 	/*
@@ -89,15 +80,16 @@ func NewDeck() Deck {
 	return Deck{newDeck}
 }
 
-func GetDeck(deck Deck)  {
+func GetDeck(deck Deck) int {
 	/*
 	Public Function.
-	Prints out each card in a deck and the total size of the deck.
+	Returns the number of cards in the deck.
 	*/
 	// for _, card := range deck.cards {
 	// 	fmt.Printf("%v of %v\n", card.value, card.suit)
 	// }
-	fmt.Printf("There are %v cards in this deck\n", len(deck.cards))
+	// fmt.Printf("There are %v cards in this deck\n", len(deck.cards))
+	return len(deck.cards)
 }
 
 

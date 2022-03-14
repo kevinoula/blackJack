@@ -1,6 +1,7 @@
 package player
 
 import (
+	// "fmt"
 	"cards"
 )
 
@@ -9,6 +10,7 @@ type Player struct {
 	hand []cards.Card
 	score int
 	handValue int
+	acesTransformed int
 }
 
 func NewPlayer(name string) Player {
@@ -17,7 +19,7 @@ func NewPlayer(name string) Player {
 	Initializes a new player with an empty hand.
 	*/
 	var newHand []cards.Card
-	return Player{name, newHand, 0, 0}
+	return Player{name, newHand, 0, 0, 0}
 }
 
 func AddToHand(player *Player, card cards.Card) {
@@ -34,6 +36,15 @@ func GetHand(player Player) []cards.Card {
 	Returns a player's entire player.hand slice.
 	*/
 	return player.hand
+}
+
+func EmptyHand(player *Player) {
+	/*
+	Public Function
+	Empties a player's hand.
+	*/
+	var newHand []cards.Card
+	player.hand = newHand
 }
 
 func GetName(player Player) string {
@@ -74,4 +85,41 @@ func SetHandValue(player *Player, value int) {
 	Sets a player's current hand value.
 	*/
 	player.handValue = value
+}
+
+func CountInHand(player Player, cardValue string) int {
+	/*
+	Public Function.
+	Iteratively searches a player's hand counts the occurances of a card value.
+	
+	Example:
+	Input -> user, Ace
+	User's hand contains -> [{3 spades} {6 diamonds} {Ace clubs}]
+	Output -> 1
+	*/
+	count := 0
+	for _, card := range player.hand {
+		cardName, cardSuit, cardVal := cards.GetCard(card)
+		_, _ = cardSuit, cardVal
+		if cardValue == cardName {
+			count++
+		}
+	}
+	return count
+}
+
+func GetAcesTransformed(player Player) int {
+	/*
+	Public Function.
+	Gets the number of Aces transformed.
+	*/
+	return player.acesTransformed
+}
+
+func SetAcesTransformed(player *Player, value int) {
+	/*
+	Public Function.
+	Sets the number of Aces transformed.
+	*/
+	player.acesTransformed = value
 }
