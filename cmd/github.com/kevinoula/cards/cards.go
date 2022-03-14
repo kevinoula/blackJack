@@ -11,21 +11,37 @@ type Card struct {
 	suit  string
 }
 
-var allowedValues = []string{
-	"Ace",
-	"2",
-	"3",
-	"4",
-	"5",
-	"6",
-	"7",
-	"8",
-	"9",
-	"10",
-	"Jack",
-	"Queen",
-	"King",
+var valueMap = map[string]int {
+	"Ace": 11,
+	"2": 2,
+	"3": 3,
+	"4": 4,
+	"5": 5,
+	"6": 6,
+	"7": 7,
+	"8": 8,
+	"9": 9,
+	"10": 10,
+	"Jack": 10,
+	"Queen": 10,
+	"King": 10,
 }
+
+// var allowedValues = []string{
+// 	"Ace",
+// 	"2",
+// 	"3",
+// 	"4",
+// 	"5",
+// 	"6",
+// 	"7",
+// 	"8",
+// 	"9",
+// 	"10",
+// 	"Jack",
+// 	"Queen",
+// 	"King",
+// }
 
 var allowedSuits = []string {
 	"spades",
@@ -43,12 +59,13 @@ func newCard(value string, suit string) Card {
 	return Card{value, suit}
 }
 
-func GetCard(card Card) (string, string) {
+func GetCard(card Card) (string, string, int) {
 	/*
 	Public Function.
 	Returns the value and suit of a given card.
 	*/
-	return card.value, card.suit
+
+	return card.value, card.suit, valueMap[card.value]
 }
 
 type Deck struct {
@@ -64,7 +81,7 @@ func NewDeck() Deck {
 	// Create a deck of each card for each suit
 	var newDeck []Card
 	for _, suit := range allowedSuits {
-		for _, value := range allowedValues {
+		for value := range valueMap {
 			newDeck  = append(newDeck, newCard(value, suit))
 		}
 	}
