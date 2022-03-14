@@ -33,15 +33,6 @@ var allowedSuits = []string {
 	"diamonds",
 }
 
-
-func NewCard(value string, suit string) Card {
-	/*
-	Private function.
-	Initializes a new card structure. A card has a value and a suit.
-	*/
-	return Card{value, suit}
-}
-
 func newCard(value string, suit string) Card {
 	/*
 	Private function.

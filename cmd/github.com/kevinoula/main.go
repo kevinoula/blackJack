@@ -45,6 +45,40 @@ func resetPlayer(currPlayer player.Player) player.Player {
 	return currPlayer
 }
 
+func playTurn(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player.Player) {
+	/*
+	Private Function.
+	Utility function that orchestrates a player's turn.
+	A round continues until a player's hand goes over 21 or they end their turn.
+	A human player has the option to decide when to end their turn.
+	The Dealer is programmed to call until their hand hits at least 18.
+	*/
+	fmt.Printf("--- It is %v's turn! ---\n", player.GetName(currPlayer))
+	fmt.Printf("[SYSTEM] %v's hand %v has a value of %v.\n", player.GetName(currPlayer), player.GetHand(currPlayer), player.GetHandValue(currPlayer))
+	for player.GetHandValue(currPlayer) <= 21 {
+		// end turn if dealer hits limit
+		if  player.GetName(currPlayer) == "Dealer" && player.GetHandValue(currPlayer) >= 18 {
+			break
+
+
+		} else if  player.GetName(currPlayer) != "Dealer" {
+			// end turn if user folds
+			fmt.Println("[SYSTEM] Press [1] to draw card, [2] to end turn.")
+			var input string
+			fmt.Scanf("%s\n", &input)
+			if input == "2" {
+				break
+			}
+		}
+		
+		currDeck, currPlayer = drawCard(currDeck, currPlayer)
+		fmt.Printf("[SYSTEM] %v's hand %v has a value of %v.\n", player.GetName(currPlayer), player.GetHand(currPlayer), player.GetHandValue(currPlayer))
+		fmt.Printf("[SYSTEM] There are %v cards in this deck\n", cards.GetDeck(currDeck))
+	}
+	fmt.Printf("--- %v's turn has ended ---\n\n", player.GetName(currPlayer))
+	return currDeck, currPlayer
+}
+
 func playRound(user player.Player, dealer player.Player, round int) (player.Player, player.Player, int)  {
 	/*
 	Private Function.
@@ -61,45 +95,15 @@ func playRound(user player.Player, dealer player.Player, round int) (player.Play
 	deck, user = drawCard(deck, user)
 	deck, dealer = drawCard(deck, dealer)
 	deck, user = drawCard(deck, user)
-	fmt.Printf("[SYSTEM] %v's starting hand %v has a value of %v and score of %v.\n", player.GetName(user), player.GetHand(user), player.GetHandValue(user), player.GetScore(user))
-	fmt.Printf("[SYSTEM] %v's starting hand %v has a value of %v and score of %v.\n", player.GetName(dealer), player.GetHand(dealer), player.GetHandValue(dealer), player.GetScore(dealer))
+	fmt.Printf("[SYSTEM] %v's starting hand %v has a value of %v.\n", player.GetName(user), player.GetHand(user), player.GetHandValue(user))
+	fmt.Printf("[SYSTEM] %v's starting hand %v has a value of %v.\n", player.GetName(dealer), player.GetHand(dealer), player.GetHandValue(dealer))
 	fmt.Print("--- Deal Phase Ended ---\n\n")
 
-	// round continues until a player's hand goes over 21 or they end their turn
 	// user's turn
-	fmt.Printf("--- It is %v's turn! ---\n", player.GetName(user))
-	fmt.Printf("[SYSTEM] %v's hand %v has a value of %v.\n", player.GetName(user), player.GetHand(user), player.GetHandValue(user))
-	for player.GetHandValue(user) <= 21 {
-		// fmt.Printf("[SYSTEM] %v's hand %v has a value of %v.\n", player.GetName(user), player.GetHand(user), player.GetHandValue(user))
+	deck, user = playTurn(deck, user)
 
-		// end turn if user folds
-		fmt.Println("[SYSTEM] Press [1] to draw card, [2] to end turn.")
-		var input string
-		fmt.Scanf("%s\n", &input)
-		if input == "2" {
-			break
-		}
-		deck, user = drawCard(deck, user)
-		fmt.Printf("[SYSTEM] %v's hand %v has a value of %v.\n", player.GetName(user), player.GetHand(user), player.GetHandValue(user))
-		fmt.Printf("[SYSTEM] There are %v cards in this deck\n", cards.GetDeck(deck))
-	}
-	fmt.Printf("--- %v's turn has ended ---\n\n", player.GetName(user))
-
-	// play dealer's turn
-	fmt.Printf("--- It is %v's turn ---\n", player.GetName(dealer))
-	fmt.Printf("%v's hand %v has a value of %v.\n", player.GetName(dealer), player.GetHand(dealer), player.GetHandValue(dealer))
-	for player.GetHandValue(dealer) <= 21 {
-		// fmt.Printf("%v's hand %v has a value of %v.\n", player.GetName(dealer), player.GetHand(dealer), player.GetHandValue(dealer))
-
-		// end turn if dealer has a hand value of at least 18
-		if  player.GetHandValue(dealer) >= 18 {
-			break
-		}
-		deck, dealer = drawCard(deck, dealer)
-		fmt.Printf("%v's hand %v has a value of %v.\n", player.GetName(dealer), player.GetHand(dealer), player.GetHandValue(dealer))
-		fmt.Printf("[SYSTEM] There are %v cards in this deck\n", cards.GetDeck(deck))
-	}
-	fmt.Printf("--- %v's turn has ended ---\n\n", player.GetName(dealer))
+	// dealer's turn
+	deck, dealer = playTurn(deck, dealer)
 
 	// increment score
 	fmt.Printf("[SYSTEM] %v's hand value is %v. %v's hand value is %v.\n", player.GetName(dealer), player.GetHandValue(dealer), player.GetName(user), player.GetHandValue(user))
