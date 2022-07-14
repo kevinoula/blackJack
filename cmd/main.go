@@ -2,27 +2,27 @@ package main
 
 import (
 	"fmt"
-	"cards"
-	"player"
+	cards "github.com/kevinoula/blackjack/cmd/cards"
+	player "github.com/kevinoula/blackjack/cmd/player"
 )
 
 func drawCard(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player.Player) {
 	/*
-	Private Function.
-	Utility function that draws a card from the deck and adds it to the player's hand.
+		Private Function.
+		Utility function that draws a card from the deck and adds it to the player's hand.
 	*/
-	removedCard := cards.RemoveRandomCard(&currDeck)  // references the actual struct
-	player.AddToHand(&currPlayer, removedCard)  // references the actual struct
+	removedCard := cards.RemoveRandomCard(&currDeck) // references the actual struct
+	player.AddToHand(&currPlayer, removedCard)       // references the actual struct
 	drawnCard, drawnSuit, drawnValue := cards.GetCard(removedCard)
 	fmt.Printf("[SYSTEM] %v drew %v of %v\n", player.GetName(currPlayer), drawnCard, drawnSuit)
 	// Wow this was kind of interesting to solve:
 	// Since an Ace can be transformed into a 1 or a 11, count the number of Aces - the number of transformations
 	// done already so no duplicate transformations can be performed
 	// if the drawn cards does not bust the hand then ignore
-	// otherwise subtract 10 so for each Ace so it esssentially updates it's value to 1 
+	// otherwise subtract 10 so for each Ace so it esssentially updates it's value to 1
 	// until the hand is no longer bust
-	numberofAces :=  player.CountInHand(currPlayer, "Ace")
-	for count := 0; count < numberofAces - player.GetAcesTransformed(currPlayer); count++ {
+	numberofAces := player.CountInHand(currPlayer, "Ace")
+	for count := 0; count < numberofAces-player.GetAcesTransformed(currPlayer); count++ {
 		if player.GetHandValue(currPlayer)+drawnValue <= 21 {
 			break
 		}
@@ -36,8 +36,8 @@ func drawCard(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player
 
 func resetPlayer(currPlayer player.Player) player.Player {
 	/*
-	Private Function.
-	Utility function that empties a player's hand and sets the value of the hand to 0 to start a new round.
+		Private Function.
+		Utility function that empties a player's hand and sets the value of the hand to 0 to start a new round.
 	*/
 	player.EmptyHand(&currPlayer)
 	player.SetHandValue(&currPlayer, 0)
@@ -47,21 +47,20 @@ func resetPlayer(currPlayer player.Player) player.Player {
 
 func playTurn(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player.Player) {
 	/*
-	Private Function.
-	Utility function that orchestrates a player's turn.
-	A round continues until a player's hand goes over 21 or they end their turn.
-	A human player has the option to decide when to end their turn.
-	The Dealer is programmed to call until their hand hits at least 18.
+		Private Function.
+		Utility function that orchestrates a player's turn.
+		A round continues until a player's hand goes over 21 or they end their turn.
+		A human player has the option to decide when to end their turn.
+		The Dealer is programmed to call until their hand hits at least 18.
 	*/
 	fmt.Printf("--- It is %v's turn! ---\n", player.GetName(currPlayer))
 	fmt.Printf("[SYSTEM] %v's hand %v has a value of %v.\n", player.GetName(currPlayer), player.GetHand(currPlayer), player.GetHandValue(currPlayer))
 	for player.GetHandValue(currPlayer) <= 21 {
 		// end turn if dealer hits limit
-		if  player.GetName(currPlayer) == "Dealer" && player.GetHandValue(currPlayer) >= 18 {
+		if player.GetName(currPlayer) == "Dealer" && player.GetHandValue(currPlayer) >= 18 {
 			break
 
-
-		} else if  player.GetName(currPlayer) != "Dealer" {
+		} else if player.GetName(currPlayer) != "Dealer" {
 			// end turn if user folds
 			fmt.Println("[SYSTEM] Press [1] to draw card, [2] to end turn.")
 			var input string
@@ -70,7 +69,7 @@ func playTurn(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player
 				break
 			}
 		}
-		
+
 		currDeck, currPlayer = drawCard(currDeck, currPlayer)
 		fmt.Printf("[SYSTEM] %v's hand %v has a value of %v.\n", player.GetName(currPlayer), player.GetHand(currPlayer), player.GetHandValue(currPlayer))
 		fmt.Printf("[SYSTEM] There are %v cards in this deck\n", cards.GetDeck(currDeck))
@@ -79,17 +78,17 @@ func playTurn(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player
 	return currDeck, currPlayer
 }
 
-func playRound(user player.Player, dealer player.Player, round int) (player.Player, player.Player, int)  {
+func playRound(user player.Player, dealer player.Player, round int) (player.Player, player.Player, int) {
 	/*
-	Private Function.
-	Core function that logically orchestrates a round of Blackjack.
-	Updates the winning player's score and returns an incremented round number.
+		Private Function.
+		Core function that logically orchestrates a round of Blackjack.
+		Updates the winning player's score and returns an incremented round number.
 	*/
 	deck := cards.NewDeck()
-	fmt.Printf("[SYSTEM] There are %v cards in this deck\n", cards.GetDeck(deck))	
+	fmt.Printf("[SYSTEM] There are %v cards in this deck\n", cards.GetDeck(deck))
 	fmt.Printf("--- Round %v ---\n", round)
 
-	// Deal phase 
+	// Deal phase
 	fmt.Println("--- Deal Phase ---")
 	deck, dealer = drawCard(deck, dealer)
 	deck, user = drawCard(deck, user)
@@ -114,12 +113,12 @@ func playRound(user player.Player, dealer player.Player, round int) (player.Play
 	} else if player.GetHandValue(user) > 21 {
 		// DEALER WINS if user over 21
 		fmt.Printf("[LOSE] %v has bust!\n", player.GetName(user))
-		player.SetScore(&dealer, player.GetScore(dealer)+1) 
+		player.SetScore(&dealer, player.GetScore(dealer)+1)
 
 	} else if player.GetHandValue(dealer) > 21 {
 		// USER WINS if dealer over 21
 		fmt.Printf("[WIN] %v has bust!\n", player.GetName(dealer))
-		player.SetScore(&user, player.GetScore(user)+1) 
+		player.SetScore(&user, player.GetScore(user)+1)
 
 	} else if player.GetHandValue(dealer) == player.GetHandValue(user) {
 		// Since nobody is over 21
@@ -129,12 +128,12 @@ func playRound(user player.Player, dealer player.Player, round int) (player.Play
 	} else if player.GetHandValue(dealer) > player.GetHandValue(user) {
 		// DEALER WINS if hand value > than user's
 		fmt.Printf("[LOSE] %v has the more valuable hand!\n", player.GetName(dealer))
-		player.SetScore(&dealer, player.GetScore(dealer)+1) 
+		player.SetScore(&dealer, player.GetScore(dealer)+1)
 
 	} else {
 		// USER WINS if hand value > than dealer's
 		fmt.Printf("[WIN] %v has the more valuable hand!\n", player.GetName(user))
-		player.SetScore(&user, player.GetScore(user)+1) 
+		player.SetScore(&user, player.GetScore(user)+1)
 
 	}
 
@@ -155,13 +154,12 @@ func main() {
 	user, dealer := player.NewPlayer(input), player.NewPlayer("Dealer")
 	playing := true
 	round := 1
-	
 
 	for playing {
-		user, dealer, round= playRound(user, dealer, round)
+		user, dealer, round = playRound(user, dealer, round)
 		fmt.Println("[SYSTEM] Press [1] to keep playing, anything else to stop.")
 		fmt.Scanf("%s\n", &input)
-		
+
 		// end game when user wants to stop
 		if input != "1" {
 			playing = false
