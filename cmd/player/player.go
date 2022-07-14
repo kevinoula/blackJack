@@ -1,7 +1,7 @@
 package player
 
 import (
-	cards "github.com/kevinoula/blackjack/cmd/cards"
+	"github.com/kevinoula/blackjack/cmd/cards"
 )
 
 type Player struct {

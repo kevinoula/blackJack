@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	cards "github.com/kevinoula/blackjack/cmd/cards"
-	player "github.com/kevinoula/blackjack/cmd/player"
+	"github.com/kevinoula/blackjack/cmd/cards"
+	"github.com/kevinoula/blackjack/cmd/player"
 )
 
 func drawCard(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player.Player) {
