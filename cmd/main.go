@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/kevinoula/blackjack/cmd/cards"
 	"github.com/kevinoula/blackjack/cmd/player"
+	"time"
 )
 
 func drawCard(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player.Player) {
@@ -64,7 +65,12 @@ func playTurn(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player
 			// end turn if user folds
 			fmt.Println("[SYSTEM] Press [1] to draw card, [2] to end turn.")
 			var input string
-			fmt.Scanf("%s\n", &input)
+			_, err := fmt.Scanf("%s\n", &input)
+			if err != nil {
+				fmt.Printf("[SYSTEM] error reading input: %v\n", err)
+				fmt.Println("[SYSTEM] Continuing as normal")
+			}
+
 			if input == "2" {
 				break
 			}
@@ -75,6 +81,7 @@ func playTurn(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player
 		fmt.Printf("[SYSTEM] There are %v cards in this deck\n", cards.GetDeck(currDeck))
 	}
 	fmt.Printf("--- %v's turn has ended ---\n\n", player.GetName(currPlayer))
+	time.Sleep(5 * time.Second)
 	return currDeck, currPlayer
 }
 
@@ -97,6 +104,7 @@ func playRound(user player.Player, dealer player.Player, round int) (player.Play
 	fmt.Printf("[SYSTEM] %v's starting hand %v has a value of %v.\n", player.GetName(user), player.GetHand(user), player.GetHandValue(user))
 	fmt.Printf("[SYSTEM] %v's starting hand %v has a value of %v.\n", player.GetName(dealer), player.GetHand(dealer), player.GetHandValue(dealer))
 	fmt.Print("--- Deal Phase Ended ---\n\n")
+	time.Sleep(5 * time.Second)
 
 	// user's turn
 	deck, user = playTurn(deck, user)
@@ -150,7 +158,12 @@ func main() {
 	fmt.Println("[SYSTEM] Welcome to Blackjack Simulator feat. Go!")
 	fmt.Println("[SYSTEM] Enter player's name:")
 	var input string
-	fmt.Scanf("%s\n", &input)
+	_, err := fmt.Scanf("%s\n", &input)
+	if err != nil {
+		fmt.Printf("[SYSTEM] error reading input: %v\n", err)
+		fmt.Println("[SYSTEM] Continuing as normal")
+	}
+
 	user, dealer := player.NewPlayer(input), player.NewPlayer("Dealer")
 	playing := true
 	round := 1
@@ -158,7 +171,11 @@ func main() {
 	for playing {
 		user, dealer, round = playRound(user, dealer, round)
 		fmt.Println("[SYSTEM] Press [1] to keep playing, anything else to stop.")
-		fmt.Scanf("%s\n", &input)
+		_, err = fmt.Scanf("%s\n", &input)
+		if err != nil {
+			fmt.Printf("[SYSTEM] error reading input: %v\n", err)
+			fmt.Println("[SYSTEM] Continuing as normal")
+		}
 
 		// end game when user wants to stop
 		if input != "1" {
