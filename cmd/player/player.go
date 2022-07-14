@@ -5,120 +5,49 @@ import (
 )
 
 type Player struct {
-	name            string
+	Name            string
+	Score           int
+	HandValue       int
+	AcesTransformed int
 	hand            []cards.Card
-	score           int
-	handValue       int
-	acesTransformed int
 }
 
+// NewPlayer Initializes a new Player with an empty hand.
 func NewPlayer(name string) Player {
-	/*
-		Public Function.
-		Initializes a new player with an empty hand.
-	*/
 	var newHand []cards.Card
-	return Player{name, newHand, 0, 0, 0}
+	return Player{Name: name, Score: 0, HandValue: 0, AcesTransformed: 0, hand: newHand}
 }
 
-func AddToHand(player *Player, card cards.Card) {
-	/*
-		Public Function.
-		Adds a card to the player.hand slice.
-	*/
-	player.hand = append(player.hand, card)
+// AddToHand Adds a cards.Card to the hand.
+func (p *Player) AddToHand(card cards.Card) {
+	p.hand = append(p.hand, card)
 }
 
-func GetHand(player Player) []cards.Card {
-	/*
-		Public Function.
-		Returns a player's entire player.hand slice.
-	*/
-	return player.hand
+// GetHand Returns a Player's entire hand.
+func (p *Player) GetHand() []cards.Card {
+	return p.hand
 }
 
-func EmptyHand(player *Player) {
-	/*
-		Public Function
-		Empties a player's hand.
-	*/
+// EmptyHand Empties a player's hand.
+func (p *Player) EmptyHand() {
 	var newHand []cards.Card
-	player.hand = newHand
+	p.hand = newHand
 }
 
-func GetName(player Player) string {
+// CountInHand Iteratively searches a Player's hand and counts the occurrences of a given card.
+func (p Player) CountInHand(name string) int {
 	/*
-		Public Function.
-		Returns a player's name.
-	*/
-	return player.name
-}
-
-func GetScore(player Player) int {
-	/*
-		Public Function.
-		Returns a player's score.
-	*/
-	return player.score
-}
-
-func SetScore(player *Player, score int) {
-	/*
-		Public Function.
-		Sets a player's score.
-	*/
-	player.score = score
-}
-
-func GetHandValue(player Player) int {
-	/*
-		Public Function.
-		Returns a player's current hand value.
-	*/
-	return player.handValue
-}
-
-func SetHandValue(player *Player, value int) {
-	/*
-		Public Function.
-		Sets a player's current hand value.
-	*/
-	player.handValue = value
-}
-
-func CountInHand(player Player, cardValue string) int {
-	/*
-		Public Function.
-		Iteratively searches a player's hand counts the occurances of a card value.
-
 		Example:
-		Input -> user, Ace
+		Input -> User.CountInHand(Ace)
 		User's hand contains -> [{3 spades} {6 diamonds} {Ace clubs}]
 		Output -> 1
 	*/
 	count := 0
-	for _, card := range player.hand {
-		cardName, cardSuit, cardVal := cards.GetCard(card)
-		_, _ = cardSuit, cardVal
-		if cardValue == cardName {
+	for _, card := range p.hand {
+		cardName, _, _ := cards.GetCard(card)
+		if name == cardName {
 			count++
 		}
 	}
 	return count
-}
-
-func GetAcesTransformed(player Player) int {
-	/*
-		Public Function.
-		Gets the number of Aces transformed.
-	*/
-	return player.acesTransformed
-}
-
-func SetAcesTransformed(player *Player, value int) {
-	/*
-		Public Function.
-		Sets the number of Aces transformed.
-	*/
-	player.acesTransformed = value
 }

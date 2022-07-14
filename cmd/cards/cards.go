@@ -6,8 +6,8 @@ import (
 )
 
 type Card struct {
-	value string
-	suit  string
+	name string
+	suit string
 }
 
 var valueMap = map[string]int{
@@ -36,7 +36,7 @@ var allowedSuits = []string{
 func newCard(value string, suit string) Card {
 	/*
 		Private function.
-		Initializes a new card structure. A card has a value and a suit.
+		Initializes a new card structure. A card has a name and a suit.
 	*/
 	return Card{value, suit}
 }
@@ -44,10 +44,10 @@ func newCard(value string, suit string) Card {
 func GetCard(card Card) (string, string, int) {
 	/*
 		Public Function.
-		Returns the value and suit of a given card.
+		Returns the name, suit, and value of a given card.
 	*/
 
-	return card.value, card.suit, valueMap[card.value]
+	return card.name, card.suit, valueMap[card.name]
 }
 
 type Deck struct {
@@ -77,7 +77,7 @@ func GetDeck(deck Deck) int {
 		Returns the number of cards in the deck.
 	*/
 	// for _, card := range deck.cards {
-	// 	fmt.Printf("%v of %v\n", card.value, card.suit)
+	// 	fmt.Printf("%v of %v\n", card.name, card.suit)
 	// }
 	// fmt.Printf("There are %v cards in this deck\n", len(deck.cards))
 	return len(deck.cards)
