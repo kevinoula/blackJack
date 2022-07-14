@@ -4,6 +4,8 @@ import (
 	"github.com/kevinoula/blackjack/cmd/cards"
 )
 
+// Player is a blackjack player who has a name, score, value of the cards in their hand, count of Aces transformed,
+// and a hand of cards.
 type Player struct {
 	Name            string
 	Score           int
@@ -44,8 +46,7 @@ func (p Player) CountInHand(name string) int {
 	*/
 	count := 0
 	for _, card := range p.hand {
-		cardName, _, _ := cards.GetCard(card)
-		if name == cardName {
+		if name == card.Name {
 			count++
 		}
 	}

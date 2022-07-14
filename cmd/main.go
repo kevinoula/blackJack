@@ -9,9 +9,9 @@ import (
 
 // drawCard Utility function that draws a card from the deck and adds it to the player's hand.
 func drawCard(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player.Player) {
-	removedCard := cards.RemoveRandomCard(&currDeck) // references the actual struct
-	currPlayer.AddToHand(removedCard)                // references the actual struct
-	drawnCard, drawnSuit, drawnValue := cards.GetCard(removedCard)
+	removedCard := currDeck.RemoveRandomCard() // references the actual struct
+	currPlayer.AddToHand(removedCard)          // references the actual struct
+	drawnCard, drawnSuit, drawnValue := removedCard.Name, removedCard.Suit, removedCard.Value
 	fmt.Printf("[SYSTEM] %v drew %v of %v\n", currPlayer.Name, drawnCard, drawnSuit)
 	// Wow this was kind of interesting to solve:
 	// Since an Ace can be transformed into a 1 or a 11, count the number of Aces - the number of transformations
@@ -68,7 +68,7 @@ func playTurn(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player
 
 		currDeck, currPlayer = drawCard(currDeck, currPlayer)
 		fmt.Printf("[SYSTEM] %v's hand %v has a value of %v.\n", currPlayer.Name, currPlayer.GetHand(), currPlayer.HandValue)
-		fmt.Printf("[SYSTEM] There are %v cards in this deck\n", cards.GetDeck(currDeck))
+		fmt.Printf("[SYSTEM] There are %v cards in this deck\n", currDeck.GetDeckLength())
 	}
 	fmt.Printf("--- %v's turn has ended ---\n\n", currPlayer.Name)
 	time.Sleep(5 * time.Second)
@@ -79,7 +79,7 @@ func playTurn(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player
 // Updates the winning player's score and returns an incremented round number.
 func playRound(user player.Player, dealer player.Player, round int) (player.Player, player.Player, int) {
 	deck := cards.NewDeck()
-	fmt.Printf("[SYSTEM] There are %v cards in this deck\n", cards.GetDeck(deck))
+	fmt.Printf("[SYSTEM] There are %v cards in this deck\n", deck.GetDeckLength())
 	fmt.Printf("--- Round %v ---\n", round)
 
 	// Deal phase
