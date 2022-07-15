@@ -22,7 +22,8 @@ func main() {
 	round := 1
 
 	for playing {
-		user, dealer, round = game.PlayRound(user, dealer, round)
+		game.PlayRound(&user, &dealer, round)
+		round += 1
 		fmt.Println("[SYSTEM] Press [1] to keep playing, anything else to stop.")
 		_, err = fmt.Scanf("%s\n", &input)
 		if err != nil {

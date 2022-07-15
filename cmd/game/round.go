@@ -8,11 +8,10 @@ import (
 )
 
 // drawCard Utility function that draws a card from the deck and adds it to the player's hand.
-func drawCard(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player.Player) {
-	removedCard := currDeck.RemoveRandomCard() // references the actual struct
-	currPlayer.AddToHand(removedCard)          // references the actual struct
-	drawnCard, drawnSuit, drawnValue := removedCard.Name, removedCard.Suit, removedCard.Value
-	fmt.Printf("[SYSTEM] %v drew %v of %v\n", currPlayer.Name, drawnCard, drawnSuit)
+func drawCard(currDeck cards.Deck, currPlayer *player.Player) (cards.Deck, *player.Player) {
+	drawnCard := currDeck.RemoveRandomCard() // references the actual struct
+	currPlayer.AddToHand(drawnCard)          // references the actual struct
+	fmt.Printf("[SYSTEM] %v drew %v of %v\n", currPlayer.Name, drawnCard.Name, drawnCard.Suit)
 	// Wow this was kind of interesting to solve:
 	// Since an Ace can be transformed into a 1 or a 11, count the number of Aces - the number of transformations
 	// done already so no duplicate transformations can be performed
@@ -21,18 +20,18 @@ func drawCard(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player
 	// until the hand is no longer bust
 	numAces := currPlayer.CountInHand("Ace")
 	for count := 0; count < numAces-currPlayer.AcesTransformed; count++ {
-		if currPlayer.HandValue+drawnValue <= 21 {
+		if currPlayer.HandValue+drawnCard.Value <= 21 {
 			break
 		}
 		currPlayer.HandValue = currPlayer.HandValue - 10
 		currPlayer.AcesTransformed = currPlayer.AcesTransformed + 1
 	}
-	currPlayer.HandValue = currPlayer.HandValue + drawnValue
+	currPlayer.HandValue = currPlayer.HandValue + drawnCard.Value
 	return currDeck, currPlayer
 }
 
 // resetPlayer Utility function that empties a player's hand and sets the value of the hand to 0 to start a new round.
-func resetPlayer(currPlayer player.Player) player.Player {
+func resetPlayer(currPlayer *player.Player) *player.Player {
 	currPlayer.EmptyHand()
 	currPlayer.HandValue = 0
 	currPlayer.AcesTransformed = 0
@@ -43,7 +42,7 @@ func resetPlayer(currPlayer player.Player) player.Player {
 // A round continues until a player's hand goes over 21 or they end their turn.
 // A human player has the option to decide when to end their turn.
 // The Dealer is programmed to call until their hand hits at least 18.
-func playTurn(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player.Player) {
+func playTurn(currDeck cards.Deck, currPlayer *player.Player) (cards.Deck, *player.Player) {
 	fmt.Printf("--- It is %v's turn! ---\n", currPlayer.Name)
 	fmt.Printf("[SYSTEM] %v's hand %v has a value of %v.\n", currPlayer.Name, currPlayer.GetHand(), currPlayer.HandValue)
 	for currPlayer.HandValue <= 21 {
@@ -77,7 +76,7 @@ func playTurn(currDeck cards.Deck, currPlayer player.Player) (cards.Deck, player
 
 // PlayRound Core function that logically orchestrates a round of Blackjack.
 // Updates the winning player's score and returns an incremented round number.
-func PlayRound(user player.Player, dealer player.Player, round int) (player.Player, player.Player, int) {
+func PlayRound(user *player.Player, dealer *player.Player, round int) {
 	deck := cards.NewDeck()
 	fmt.Printf("[SYSTEM] There are %v cards in this deck\n", deck.GetDeckLength())
 	fmt.Printf("--- Round %v ---\n", round)
@@ -137,5 +136,5 @@ func PlayRound(user player.Player, dealer player.Player, round int) (player.Play
 	dealer = resetPlayer(dealer)
 	round++
 	fmt.Printf("[SCORE] %v has %v win(s). %v has %v win(s).\n", dealer.Name, dealer.Score, user.Name, user.Score)
-	return user, dealer, round
+	return
 }
