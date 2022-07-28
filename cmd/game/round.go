@@ -16,7 +16,7 @@ func drawCard(currDeck cards.Deck, currPlayer *player.Player) (cards.Deck, *play
 	// Since an Ace can be transformed into a 1 or a 11, count the number of Aces - the number of transformations
 	// done already so no duplicate transformations can be performed
 	// if the drawn cards does not bust the hand then ignore
-	// otherwise subtract 10 so for each Ace so it esssentially updates it's value to 1
+	// otherwise subtract 10 so for each Ace, so it essentially updates its value to 1
 	// until the hand is no longer bust
 	numAces := currPlayer.CountInHand("Ace")
 	for count := 0; count < numAces-currPlayer.AcesTransformed; count++ {
@@ -79,7 +79,6 @@ func playTurn(currDeck cards.Deck, currPlayer *player.Player) (cards.Deck, *play
 // Updates the winning player's score and returns an incremented round number.
 func PlayRound(user *player.Player, dealer *player.Player, round int) {
 	deck := cards.NewDeck()
-	fmt.Printf("[SYSTEM] There are %v cards in this deck\n", deck.GetDeckLength())
 
 	// Deal phase
 	fmt.Println("--- Deal Phase ---")
@@ -89,6 +88,7 @@ func PlayRound(user *player.Player, dealer *player.Player, round int) {
 	deck, user = drawCard(deck, user)
 	fmt.Printf("[SYSTEM] %v's starting hand %v has a value of %v.\n", user.Name, user.GetHand(), user.HandValue)
 	fmt.Printf("[SYSTEM] %v's starting hand %v has a value of %v.\n", dealer.Name, dealer.GetHand(), dealer.HandValue)
+	fmt.Printf("[SYSTEM] There are %v cards in this deck\n", deck.GetDeckLength())
 	fmt.Print("--- Deal Phase Ended ---\n\n")
 	time.Sleep(5 * time.Second)
 
