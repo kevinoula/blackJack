@@ -27,6 +27,7 @@ func drawCard(currDeck cards.Deck, currPlayer *player.Player) (cards.Deck, *play
 		currPlayer.AcesTransformed = currPlayer.AcesTransformed + 1
 	}
 	currPlayer.HandValue = currPlayer.HandValue + drawnCard.Value
+	time.Sleep(2 * time.Second)
 	return currDeck, currPlayer
 }
 
@@ -79,7 +80,6 @@ func playTurn(currDeck cards.Deck, currPlayer *player.Player) (cards.Deck, *play
 func PlayRound(user *player.Player, dealer *player.Player, round int) {
 	deck := cards.NewDeck()
 	fmt.Printf("[SYSTEM] There are %v cards in this deck\n", deck.GetDeckLength())
-	fmt.Printf("--- Round %v ---\n", round)
 
 	// Deal phase
 	fmt.Println("--- Deal Phase ---")
@@ -100,35 +100,16 @@ func PlayRound(user *player.Player, dealer *player.Player, round int) {
 
 	// increment score
 	fmt.Printf("[SYSTEM] %v's hand value is %v. %v's hand value is %v.\n", dealer.Name, dealer.HandValue, user.Name, user.HandValue)
-	if user.HandValue > 21 && dealer.HandValue > 21 {
-		// TIE if both over 21
-		fmt.Println("[TIE] TIE since both players bust!")
+	if user.HandValue > 21 && dealer.HandValue > 21 || dealer.HandValue == user.HandValue { // Tie scenario
+		fmt.Printf("[ROUND %d] ends in a TIE!\n", round)
 
-	} else if user.HandValue > 21 {
-		// DEALER WINS if user over 21
-		fmt.Printf("[LOSE] %v has bust!\n", user.Name)
+	} else if user.HandValue > 21 || (21 >= dealer.HandValue && dealer.HandValue > user.HandValue) { // Dealer win scenario
+		fmt.Printf("[ROUND %d] Dealer wins!\n", round)
 		dealer.Score = dealer.Score + 1
 
-	} else if dealer.HandValue > 21 {
-		// USER WINS if dealer over 21
-		fmt.Printf("[WIN] %v has bust!\n", dealer.Name)
+	} else { // Otherwise user win scenario
+		fmt.Printf("[ROUND %d] %s wins!\n", round, user.Name)
 		user.Score = user.Score + 1
-
-	} else if dealer.HandValue == user.HandValue {
-		// Since nobody is over 21
-		// TIE is both hands have same value
-		fmt.Println("[TIE] TIE since both players hands are the same value!")
-
-	} else if dealer.HandValue > user.HandValue {
-		// DEALER WINS if hand value > than user's
-		fmt.Printf("[LOSE] %v has the more valuable hand!\n", dealer.Name)
-		dealer.Score = dealer.Score + 1
-
-	} else {
-		// USER WINS if hand value > than dealer's
-		fmt.Printf("[WIN] %v has the more valuable hand!\n", user.Name)
-		user.Score = user.Score + 1
-
 	}
 
 	// Output the current score
