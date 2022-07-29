@@ -12,6 +12,7 @@ builds:
     goos:
       - linux
       - darwin
+      - windows
     main: ./cmd
     binary: blackjack
 archives:
