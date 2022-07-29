@@ -68,3 +68,27 @@ func (d *Deck) RemoveRandomCard() Card {
 	d.cards = append(d.cards[:randomCardIdx], d.cards[randomCardIdx+1:]...)
 	return randomCard
 }
+
+// GetBustProbability gets the probability that the next card drawn will cause the value of the hand to go over 21.
+func (d *Deck) GetBustProbability(handValue int) float32 {
+	// Calculate the acceptable range for remaining cards in the deck
+	diff := 21 - handValue
+	if diff == 0 {
+		return 100
+	}
+
+	// If any cards are greater than the acceptable range then increment the bust count
+	bustCount := 0
+	for _, card := range d.cards {
+		cardVal := card.Value
+		// Aces are valued as 1 here since they can be transformed
+		if card.Name == "Ace" {
+			cardVal = 1
+		}
+		if cardVal > diff {
+			bustCount++
+		}
+	}
+	return (float32(bustCount) / float32(d.GetDeckLength())) * 100
+
+}

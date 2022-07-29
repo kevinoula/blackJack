@@ -39,13 +39,22 @@ func resetPlayer(currPlayer *player.Player) *player.Player {
 	return currPlayer
 }
 
+// printHandStats prints out the player's hand statistics: the player's name, the value of their hand, and the probability
+// that they will bust on the next draw.
+func printHandStats(p *player.Player, d cards.Deck) {
+	fmt.Printf("[STATS] %v's hand %v has a value of %v. Probability of bust: %f%%.\n", p.Name, p.GetHand(), p.HandValue, d.GetBustProbability(p.HandValue))
+	fmt.Printf("[STATS] There are %v cards in this deck.\n", d.GetDeckLength())
+	return
+}
+
 // playTurn Utility function that orchestrates a player's turn.
 // A round continues until a player's hand goes over 21 or they end their turn.
 // A human player has the option to decide when to end their turn.
 // The Dealer is programmed to call until their hand hits at least 18.
 func playTurn(currDeck cards.Deck, currPlayer *player.Player) (cards.Deck, *player.Player) {
 	fmt.Printf("--- It is %v's turn! ---\n", currPlayer.Name)
-	fmt.Printf("[SYSTEM] %v's hand %v has a value of %v.\n", currPlayer.Name, currPlayer.GetHand(), currPlayer.HandValue)
+	printHandStats(currPlayer, currDeck)
+
 	for currPlayer.HandValue <= 21 {
 		// end turn if dealer hits limit
 		if currPlayer.Name == "Dealer" && currPlayer.HandValue >= 18 {
@@ -67,8 +76,7 @@ func playTurn(currDeck cards.Deck, currPlayer *player.Player) (cards.Deck, *play
 		}
 
 		currDeck, currPlayer = drawCard(currDeck, currPlayer)
-		fmt.Printf("[SYSTEM] %v's hand %v has a value of %v.\n", currPlayer.Name, currPlayer.GetHand(), currPlayer.HandValue)
-		fmt.Printf("[SYSTEM] There are %v cards in this deck\n", currDeck.GetDeckLength())
+		printHandStats(currPlayer, currDeck)
 	}
 	fmt.Printf("--- %v's turn has ended ---\n\n", currPlayer.Name)
 	time.Sleep(5 * time.Second)
@@ -88,7 +96,6 @@ func PlayRound(user *player.Player, dealer *player.Player, round int) {
 	deck, user = drawCard(deck, user)
 	fmt.Printf("[SYSTEM] %v's starting hand %v has a value of %v.\n", user.Name, user.GetHand(), user.HandValue)
 	fmt.Printf("[SYSTEM] %v's starting hand %v has a value of %v.\n", dealer.Name, dealer.GetHand(), dealer.HandValue)
-	fmt.Printf("[SYSTEM] There are %v cards in this deck\n", deck.GetDeckLength())
 	fmt.Print("--- Deal Phase Ended ---\n\n")
 	time.Sleep(5 * time.Second)
 
