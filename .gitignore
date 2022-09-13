@@ -21,3 +21,6 @@
 # Built binaries
 blackjack
 /dist
+
+# Utility scripts
+*.sh
